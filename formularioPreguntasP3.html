@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Preguntas</title>
+    
+    <style>
+        * {
+            margin-top: 2em;
+            font-size: 15px;
+           
+        }
+        input[type=radio]{
+            
+            justify-content:space-evenly;
+            align-items:center;
+            align-content: space-between;
+            vertical-align:baseline;
+            margin-right: 5rem;
+            
+            
+        }
+        input[type=button]{
+            padding: 30px;
+            margin-right: 10rem;
+
+        }
+        main {
+            display: flex;
+            margin: 0 auto;
+            align-content: space-evenly;
+            justify-content: space-evenly;
+        }
+        main div.principal table#preguntas tr:first-child th{
+            border: 1px solid black;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+</head>
+<body>
+    <main>
+    <div class="principal">
+    <form>
+        <label for="pregunta">Pregunta</label>
+        <textarea id="pregunta" cols="30" rows="5" ></textarea>
+        <br>
+        <label for="verdadero">Verdadero</label>
+        <input type="radio" name="respuesta" id="verdadero">
+        <label for="falso">Falso</label>
+        <input type="radio" name="respuesta" id="falso">
+        <br>
+        <label for="puntuacion">Puntuación</label>
+        <input type="text" id="puntuacion" maxlength="1">
+        <br>
+        <input type="button" id="atras" value="atras">
+        <input type="button" id="guardar" value="grabar">
+    </form>
+    </div>
+    <div class="principal">
+        <table id="preguntas">
+            
+            
+        </table>
+    </div>
+</main>
+<script type="module" src="./scripts/cargarPreguntasP3.js">
+    import {cargarPreguntas} from './scripts/cargarPreguntas.js';
+   let retraso=true;
+  
+   cargarPreguntas(retraso);
+   
+</script>
+</body>
+</html>
