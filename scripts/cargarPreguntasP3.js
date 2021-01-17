@@ -303,6 +303,7 @@ function comprobarFormulario() {
 }
 //Ahora es hora de añadir los eventos de escucha para comprobar el formulario,
 // si esta completo o cuando hacemos click sobre las opciones del mismo
+window.addEventListener('load', comprobarFormulario);
 document.addEventListener('keyup', comprobarFormulario);
 document.addEventListener('click', comprobarFormulario);
 

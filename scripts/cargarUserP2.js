@@ -5,7 +5,9 @@
  * @param {*} cuestionario cuestionario actual
  */
 function buscarUsuario(user, cuestionario) {
-  return cuestionario.filter((persona) => persona.correo == user);
+  let index = cuestionario.findIndex((persona) => persona.correo === user);
+
+  return cuestionario[index];
 }
 
 /**
@@ -19,51 +21,7 @@ function Persona(correo, fecha, preguntas) {
   this.fecha = fecha;
   this.preguntas = preguntas;
 }
-/**
- * Funcion cargarUsuario, realizará el cargado de nuestro usuario, creamos una fecha y preguntas del usuario.
- */
-export function cargarUsuario() {
-  try {
-    let date = new Date();
-    let correoUser = Cookies.get('usuario');
-    let preguntas = [];
-    let nuevoUsuario = new Persona(correoUser, date, preguntas);
-    if (correoUser !== null) {
-      //para obtener la fecha si ya estaba, y actualizar a la nueva
-      //pasar de JSON a objeto JS
-      let strCuestionario = Cookies.get('cuestionario');
-      if (strCuestionario !== undefined) {
-        let objCuestionario = JSON.parse(strCuestionario);
-        /*
-         *Retornamos una lista sin repetidos y pasamos el campo
-         * correo para que busque por ese campo, actuaría como el ID.
-         */
-        let sinRepetidos = obtenerListaSinRepetidos(objCuestionario, 'correo');
-        let datosUser = buscarUsuario(correoUser, sinRepetidos);
-        //Lista sin repetidos:
-        //Si nos devuelve que no lo ha encontrado, lo añadiremos a la coleccion
-        if (datosUser.length === 0) {
-          sinRepetidos.push(nuevoUsuario);
-          guardarCuestionario(sinRepetidos);
-          saludar(nuevoUsuario.correo, nuevoUsuario.fecha);
-        } else {
-          //Mantenemos la fecha nueva como la ultima
-          saludar(datosUser.correo, datosUser.fecha);
-          let index = sinRepetidos.indexOf(datosUser);
-          sinRepetidos[index].fecha = nuevoUsuario.fecha;
-          guardarCuestionario(sinRepetidos);
-        }
-      } else {
-        let cuestionario = [];
-        cuestionario.push(nuevoUsuario);
-        guardarCuestionario(cuestionario);
-        saludar(nuevoUsuario.correo, nuevoUsuario.fecha);
-      }
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
+
 /**
  * Evento que ocurrirá cuando pulsemos en el botón para redirigirnos a la pantalla 3 de preguntas
  */
@@ -115,4 +73,54 @@ const guardarCuestionario = (objCuestionario) => {
     secure: true,
   });
 };
+/**
+ * Funcion cargarUsuario, realizará el cargado de nuestro usuario, creamos una fecha y preguntas del usuario.
+ */
+function cargarUsuario() {
+  try {
+    let date = new Date();
+    let correoUser = Cookies.get('usuario');
+    let preguntas = [];
+    let nuevoUsuario = new Persona(correoUser, date, preguntas);
+    if (correoUser !== null) {
+      //para obtener la fecha si ya estaba, y actualizar a la nueva
+      //pasar de JSON a objeto JS
+      let strCuestionario = Cookies.get('cuestionario');
+      if (strCuestionario !== undefined) {
+        let objCuestionario = JSON.parse(strCuestionario);
+        /*
+         *Retornamos una lista sin repetidos y pasamos el campo
+         * correo para que busque por ese campo, actuaría como el ID.
+         */
+        //Lista sin repetidos:
+        let sinRepetidos = obtenerListaSinRepetidos(objCuestionario, 'correo');
+        let datosUser = buscarUsuario(correoUser, sinRepetidos);
+
+        //Si nos devuelve que no lo ha encontrado, lo añadiremos a la coleccion
+        if (datosUser === undefined) {
+          sinRepetidos.push(nuevoUsuario);
+          guardarCuestionario(sinRepetidos);
+          saludar(nuevoUsuario.correo, nuevoUsuario.fecha);
+        } else {
+          //Mantenemos la fecha nueva como la ultima,
+          // Mostramos la ULTIMA VEZ
+          let index = sinRepetidos.findIndex(
+            (persona) => persona.correo === correoUser
+          );
+          saludar(correoUser, new Date(sinRepetidos[index].fecha));
+          sinRepetidos[index].fecha = nuevoUsuario.fecha;
+          guardarCuestionario(sinRepetidos);
+        }
+        //nuevo cuestionario con usuario nuevo
+      } else {
+        let cuestionario = [];
+        cuestionario.push(nuevoUsuario);
+        guardarCuestionario(cuestionario);
+        saludar(nuevoUsuario.correo, nuevoUsuario.fecha);
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 cargarUsuario();

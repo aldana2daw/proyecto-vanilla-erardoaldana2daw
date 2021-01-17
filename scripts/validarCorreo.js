@@ -2,9 +2,7 @@
 //^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$
 
 document.addEventListener('focusout', function (event) {
-  let regexp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{0,}))$/.test(
-    event.target.value
-  );
+  let regexp = new RegExp(/.+@+.+\.+./).test(event.target.value);
 
   if (regexp && event.target.id === 'email') {
     Cookies.set('usuario', event.target.value, {
